@@ -24,11 +24,16 @@ export default function App() {
     })();
   }, []);
 
+  const options = {
+    base64: true,
+  }
+
   const takePicture = async () => {
     console.log("hello")
+    
     if (camera) {
       try {
-        const data = await camera.takePictureAsync(null);
+        const data = await camera.takePictureAsync(options);
         setImage(data.uri)
         console.log(data);
       } catch (e) {
@@ -63,7 +68,25 @@ export default function App() {
           type={cameraType}
           flashMode={flash}
           ref={(ref) => setCamera(ref)}
-        />
+        >
+          <View style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            padding: 30,
+          }}>
+            <Button icon={'retweet'} onPress={() => {
+              setCameraType(cameraType === CameraType.back ? CameraType.front : CameraType.back);
+            }} />
+            <Button icon={'flash'}
+              color={flash === Camera.Constants.FlashMode.off ? 'gray' : '#f1f1f1'}
+              onPress={() => {
+              setFlash(flash === Camera.Constants.FlashMode.off 
+                ? Camera.Constants.FlashMode.on
+                : Camera.Constants.FlashMode.off);
+            }}/>
+          </View> 
+        </Camera>
+  
         : <Image source={{uri: image}} style={styles.camera}/> 
       }
       <View>
