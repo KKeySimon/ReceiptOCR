@@ -9,11 +9,14 @@ export default function App() {
   const [cameraPermission, setCameraPermission] = useState(null);
   //current image that user has taken
   const [image, setImage] = useState(null);
+  const [base64Image, setBase64Image] = useState(null);
   //front/back camera
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   //reference for camera
   const [camera, setCamera] = useState(null);
+
+  const API_URL = `https://jzsggwpl40.execute-api.us-east-1.amazonaws.com/processImage`;
 
   //When stuff in list changes, command runs
   useEffect(() => {
@@ -35,7 +38,7 @@ export default function App() {
       try {
         const data = await camera.takePictureAsync(options);
         setImage(data.uri)
-        console.log(data);
+        setBase64Image(data.base64)
       } catch (e) {
         console.log(e);
       }
@@ -45,9 +48,24 @@ export default function App() {
   const saveImage = async () => {
     if (image) {
       try {
-        await MediaLibrary.createAssetAsync(image);
-        alert('Picture Taken!');
+        console.log(base64Image)
+        const data = {
+          "image": base64Image,
+        };
+        const body = JSON.stringify(data)
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: body
+        });
+
+        if (res.ok) {
+          const responseBody = await res.text();
+          console.log(responseBody);
+        } else {
+          console.log(res.status);
+        }
         setImage(null);
+        setBase64Image(null);
       } catch (e) {
         console.log(e);
       }
