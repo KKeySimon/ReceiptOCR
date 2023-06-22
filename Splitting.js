@@ -5,23 +5,23 @@ import { ButtonGroup, ListItem } from '@rneui/base';
 import { Button, Text } from '@rneui/themed';
 
 export default function Splitting(imageData) {
-    console.log(imageData['imageData'])
     const tableData = imageData['imageData'];
+    //Todo: When editing arrays, should make a copy and then use the setter method to avoid
     
     const [checked, setChecked] = React.useState(new Array(imageData.length).fill(false));
     const [numPeople, setNumPeople] = React.useState(0);
+    const [selectedUser, setSelectedUser] = React.useState(0);
     const [totalPrice, setTotalPrice] = React.useState(0);
     const [evenOrIndiv, setEvenOrIndiv] = React.useState(0);
     const [dataConfirmed, setDataConfirmed] = React.useState(false);
+    //2D array (item, users)
+    const [usersItems, setUsersItems] = React.useState(Array.from({length : tableData.length}, () => Array.from({length: numPeople}, () => null)))
 
     function calcTotalPrice() {
         var price = 0;
         tableData.forEach(item => price += Number(item['PRICE']));
         setTotalPrice(price.toFixed(2));
     }
-    
-
-
     
     return (
 
@@ -33,8 +33,8 @@ export default function Splitting(imageData) {
     <ScrollView>
         {!dataConfirmed ?
         <View>
-            {tableData.map((rowData) => (
-                <ListItem bottomDivider>
+            {tableData.map((rowData, index) => (
+                <ListItem bottomDivider key={index}>
                     <ListItem.Content>
                         <ListItem.Title>{rowData['ITEM']}</ListItem.Title>
                         <ListItem.Subtitle>Price: {rowData['PRICE']}</ListItem.Subtitle>
@@ -54,8 +54,6 @@ export default function Splitting(imageData) {
             }}}>-</Button>
             <Text h4> {numPeople}</Text>
             <Button size="md" onPress={() => setNumPeople(numPeople + 1)}>+</Button>
-            
-
 
             <Text align = "center" style = {styles.subHeader}
                 containerStyle={{ marginBottom: 20 }}
@@ -66,39 +64,71 @@ export default function Splitting(imageData) {
                 selectedIndex = {evenOrIndiv}
                 onPress = {(value) => {
                     setEvenOrIndiv(value);
-                  }}
+                }}
                 containerStyle={{ marginBottom: 20 }} />
-            
+            {evenOrIndiv !== 0 ?
+                <View style = {styles.container} align = "center">
+                    <Text>Select Which User Ordered Which Dish</Text>
+                    <ButtonGroup 
+                        buttons={ Array.from({length: numPeople}, (_, i) => i + 1)}
+                        selectedIndex={selectedUser}
+                        onPress={(value => 
+                            {
+                                setSelectedUser(value);
+                                for (let i = 0; i < usersItems.length; i++) {
+                                    if (usersItems[i][value] === true) {
+                                        checked[i] = true;
+                                    } else {
+                                        checked[i] = false;
+                                    }
+                                }
+                            }
+                        )}
+                    />
+                    {tableData.map((rowData, index) => (
+                        <ListItem 
+                            key={index}
+                        bottomDivider>
+                            <ListItem.CheckBox
+                            // Use ThemeProvider to change the defaults of the checkbox
+                            iconType="material-community"
+                            checkedIcon="checkbox-marked"
+                            uncheckedIcon="checkbox-blank-outline"
+                            checked={checked[index]}
+                            onPress={() => setChecked((prevList) => {
+                                    const newList = [...prevList];
+                                    newList[index] = !newList[index];
+                                    return newList;
+                                })
+                            }
+                            />
+                            <ListItem.Content>
+                                <ListItem.Title>{rowData['ITEM']}</ListItem.Title>
+                                <ListItem.Subtitle>{rowData['PRICE']}</ListItem.Subtitle>
+                            </ListItem.Content>
 
-            <View style = {styles.container} align = "center">
-                
-
-                {tableData.map((rowData, index) => (
-                    <ListItem 
-                        key={index}
-                    bottomDivider>
-                        <ListItem.CheckBox
-                        // Use ThemeProvider to change the defaults of the checkbox
-                        iconType="material-community"
-                        checkedIcon="checkbox-marked"
-                        uncheckedIcon="checkbox-blank-outline"
-                        checked={checked[index]}
-                        onPress={() => setChecked((prevList) => {
-                                const newList = [...prevList];
-                                newList[index] = !newList[index];
-                                return newList;
-                            })
-                        }
-                        />
-                        <ListItem.Content>
-                            <ListItem.Title>{rowData['ITEM']}</ListItem.Title>
-                            <ListItem.Subtitle>{rowData['PRICE']}</ListItem.Subtitle>
-                        </ListItem.Content>
-                        <ListItem.Chevron />
-                    </ListItem>
-                ))}
-
-            </View>
+                            {usersItems[index].map((item, index) => {
+                                if (item) {
+                                    return <Text key={index}>{index + 1}</Text>
+                                }
+                            })}
+                            <ListItem.Chevron />
+                        </ListItem>
+                    ))}
+                <Button align="center" onPress={() => 
+                    checked.forEach((item, index) => {if (item) {
+                        const updatedItems = [...usersItems];
+                        updatedItems[index][selectedUser] = true;
+                        setUsersItems(updatedItems);
+                    } else {
+                        const updatedItems = [...usersItems];
+                        updatedItems[index][selectedUser] = false;
+                        setUsersItems(updatedItems);
+                    }})
+                }>Add</Button> 
+                </View>
+                : <View></View>
+            }
         
             <Button align = "center">CONTINUE</Button> 
 
