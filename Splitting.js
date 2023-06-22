@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table, Row, Rows } from "react-native-table-component";
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { ButtonGroup, ListItem } from '@rneui/base';
-import { Button } from '@rneui/themed';
+import { Button, Text } from '@rneui/themed';
 
 export default function Splitting(imageData) {
     console.log(imageData['imageData'])
@@ -14,9 +14,14 @@ export default function Splitting(imageData) {
     const [evenOrIndiv, setEvenOrIndiv] = React.useState(0);
     const [dataConfirmed, setDataConfirmed] = React.useState(false);
 
-
-    tableData.forEach(item => setTotalPrice(totalPrice + item['PRICE']));
+    function calcTotalPrice() {
+        var price = 0;
+        tableData.forEach(item => price += Number(item['PRICE']));
+        setTotalPrice(price.toFixed(2));
+    }
     
+
+
     
     return (
 
@@ -37,20 +42,18 @@ export default function Splitting(imageData) {
                     <ListItem.Chevron />
                 </ListItem>
             ))}
-            <Button size="md" onPress={() => setDataConfirmed(true)}>Looks Good!</Button>
+            <Button size="md" onPress={() => {setDataConfirmed(true); calcTotalPrice()}}>Looks Good!</Button>
         </View>
         :
         <View>
             <Text h2 align = "center" containerStyle={{ marginBottom: 20 }}>Total Price: {totalPrice}</Text>
             
             <Text h4 align = "center" containerStyle={{ marginBottom: 20 }}> Number of People</Text>
-            <Stack row align="center" spacing={4}>
-                <Button size="md" onPress={() => {if (numPeople != 0) {
-                    setNumPeople(numPeople - 1)
-                }}}>-</Button>
-                <Text h4> {numPeople}</Text>
-                <Button size="md" onPress={() => setNumPeople(numPeople + 1)}>+</Button>
-            </Stack>
+            <Button size="md" onPress={() => {if (numPeople != 0) {
+                setNumPeople(numPeople - 1)
+            }}}>-</Button>
+            <Text h4> {numPeople}</Text>
+            <Button size="md" onPress={() => setNumPeople(numPeople + 1)}>+</Button>
             
 
 
