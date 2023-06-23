@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Table, Row, Rows } from "react-native-table-component";
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Dimensions } from 'react-native';
 import { ButtonGroup, ListItem } from '@rneui/base';
 import { Button, Text } from '@rneui/themed';
 
@@ -32,17 +32,26 @@ export default function Splitting(imageData) {
         */
     <ScrollView>
         {!dataConfirmed ?
-        <View>
-            {tableData.map((rowData, index) => (
-                <ListItem bottomDivider key={index}>
-                    <ListItem.Content>
-                        <ListItem.Title>{rowData['ITEM']}</ListItem.Title>
-                        <ListItem.Subtitle>Price: {rowData['PRICE']}</ListItem.Subtitle>
-                    </ListItem.Content>
-                    <ListItem.Chevron />
-                </ListItem>
-            ))}
-            <Button size="md" onPress={() => {setDataConfirmed(true); calcTotalPrice()}}>Looks Good!</Button>
+        <View style = {styles.container}>
+            
+            <View style = {{ marginTop: 150, marginBottom: -150}}>
+                <Text h1 style = {{textAlign: 'center', fontWeight: 'bold', color: '#02c736'}}>Looks Good?</Text>
+                <Text style = {{textAlign: 'center', marginTop: 30, marginBottom: -30}}> Check if all the information is correct.</Text>
+            </View>
+
+            <View style = {styles.listItemContainer}>
+                {tableData.map((rowData, index) => (
+                    <ListItem bottomDivider key={index}>
+                        <ListItem.Content style = {styles.listItemContent}>
+                            <ListItem.Title style = {{color: "#02c736", fontWeight: 'bold'}}>{rowData['ITEM']}</ListItem.Title>
+                            <ListItem.Subtitle>Price: ${rowData['PRICE']}</ListItem.Subtitle>
+                        </ListItem.Content>
+                    </ListItem>
+                ))}
+            </View>
+            <View style = {styles.buttonContainer}>
+                <Button color="#02c736" buttonStyle = {{borderRadius: 10}} size="md" onPress={() => {setDataConfirmed(true); calcTotalPrice()}}>Continue</Button>
+            </View>
         </View>
         :
         <View>
@@ -154,9 +163,21 @@ export default function Splitting(imageData) {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-    table: { borderWidth: 1, borderColor: '#c1c0b9' },
-    head: { height: 40, backgroundColor: '#f1f8ff' },
-    headText: { margin: 6, fontWeight: 'bold' },
-    rowText: { margin: 6 },
+    container: { flex: 1, backgroundColor: '#fff', width: Dimensions.get('window').width, height: Dimensions.get('window').height},
+    listItemContainer: {
+        flex: 1,
+        justifyContent: 'center',
+      },
+      listItemContent: {
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    buttonContainer: {
+        position: 'absolute',
+        bottom: 20,
+        width: '100%',
+        padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
 });
