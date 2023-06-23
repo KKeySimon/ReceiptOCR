@@ -3,6 +3,7 @@ import { Table, Row, Rows } from "react-native-table-component";
 import { ScrollView, StyleSheet, View, Dimensions } from 'react-native';
 import { ButtonGroup, ListItem } from '@rneui/base';
 import { Button, Text } from '@rneui/themed';
+import { ListItemChevron } from '@rneui/base/dist/ListItem/ListItem.Chevron';
 
 
 export default function Splitting(imageData) {
@@ -31,7 +32,7 @@ export default function Splitting(imageData) {
         2. LIST ITEMS VIEW OF RECEIPT  (USER SELECTS LOOKS GOOD OR TAKE AGAIN) 
         3. TOTAL PRICE, CHOOSE NUM PEOPLE, ONLY SHOW CHECKBOX TABLE IF USER SELECTS INDIVIDUAL
         */
-    <ScrollView>
+    <ScrollView scrollEnabled = {false}>
         {!dataConfirmed ?
         <View style = {styles.container}>
 
@@ -92,7 +93,7 @@ export default function Splitting(imageData) {
                 <View style = {styles.listItemContainer}>
                 {evenOrIndiv !== 0 ?
                     <View style = {styles.container} align = "center">
-                        <Text>Select Which User Ordered Which Dish</Text>
+                        <Text style = {{textAlign: 'center'}}>Select Which User Ordered Which Dish</Text>
                         <ButtonGroup
                             selectedButtonStyle = {{backgroundColor: '#02c736'}}
                             selectedTextStyle = {{color: 'white'}}
@@ -111,6 +112,7 @@ export default function Splitting(imageData) {
                                 }
                             )}
                         />
+                        <ScrollView>
                         {tableData.map((rowData, index) => (
                             <ListItem 
                                 key={index}
@@ -133,14 +135,15 @@ export default function Splitting(imageData) {
                                     <ListItem.Title style = {{color: "#02c736", fontWeight: 'bold'}}>{rowData['ITEM']}</ListItem.Title>
                                     <ListItem.Subtitle>${rowData['PRICE']}</ListItem.Subtitle>
                                 </ListItem.Content>
-
                                 {usersItems[index].map((item, index) => {
                                     if (item) {
-                                        return <Text key={index}>{index + 1}</Text>
+                                        return <Text style = {{color: '#02c736'}} key={index}>{index + 1}</Text>
                                     }
                                 })}
+                 
                             </ListItem>
                         ))}
+                        </ScrollView>
                     <Button align="center" size = 'md' color="#02c736" buttonStyle = {{borderRadius: 10}} style = {{width: '100%', justifyContent: 'center', alignItems: 'center', marginTop: 20}} onPress={() => 
                         checked.forEach((item, index) => {if (item) {
                             const updatedItems = [...usersItems];
@@ -151,7 +154,7 @@ export default function Splitting(imageData) {
                             updatedItems[index][selectedUser] = false;
                             setUsersItems(updatedItems);
                         }})
-                    }>Add Items</Button> 
+                    }>Confirm Selection</Button> 
                     </View>
                     : <View></View>
                 }
