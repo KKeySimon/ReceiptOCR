@@ -2,12 +2,13 @@ import React, { useState, useEffect} from 'react';
 import { Table, Row, Rows } from "react-native-table-component";
 import { ScrollView, StyleSheet, View, Dimensions } from 'react-native';
 import { ButtonGroup, ListItem } from '@rneui/base';
-import { Button, Text } from '@rneui/themed';
+import { Button, Text, Icon } from '@rneui/themed';
 import { ListItemChevron } from '@rneui/base/dist/ListItem/ListItem.Chevron';
+import CustomButton from './src/components/CustomButton';
 
 
-export default function Splitting(imageData) {
-    const tableData = imageData['imageData'];
+export default function Splitting({imageData, onUpdateImageData}) {
+    const tableData = imageData;
     //Todo: When editing arrays, should make a copy and then use the setter method to avoid
     
     const [checked, setChecked] = React.useState(new Array(imageData.length).fill(false));
@@ -24,6 +25,16 @@ export default function Splitting(imageData) {
         tableData.forEach(item => price += Number(item['PRICE']));
         setTotalPrice(price.toFixed(2));
     }
+
+    function updateUsersItems(index) {
+        const updatedItems = [...usersItems];
+        updatedItems[index][selectedUser] = !usersItems[index][selectedUser];
+        setUsersItems(updatedItems);
+    }
+
+    const handleClick = () => {
+        onUpdateImageData();
+    };
     
     return (
 
@@ -35,13 +46,16 @@ export default function Splitting(imageData) {
     <ScrollView scrollEnabled = {false}>
         {!dataConfirmed ?
         <View style = {styles.container}>
-
+            <View style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 30,
+              }}><CustomButton icon='level-up' onPress={() => handleClick()} color='gray' /></View>
                 <View style = {{ marginTop: 150, marginBottom: -150}}>
+                
                     <Text h1 style = {{textAlign: 'center', fontWeight: 'bold', color: '#02c736'}}>Looks Good?</Text>
                     <Text style = {{textAlign: 'center', marginTop: 30, marginBottom: -30}}> Check if all the information is correct.</Text>
                 </View>
-
-
 
                 <View style = {styles.listItemContainer}>
                     {tableData.map((rowData, index) => (
@@ -60,7 +74,11 @@ export default function Splitting(imageData) {
         </View>
         : 
         <View style = {styles.container}>
-
+<View style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 30,
+              }}><CustomButton icon='level-up' onPress={() => handleClick()} color='gray' /></View>
             <View style = {{marginTop: 125, marginBottom:0}}>
                 <Text h2 style = {{textAlign: 'center',  marginBottom: 20}} >Total Price:</Text>
                 <View style={styles.listItemContent}>
@@ -134,6 +152,7 @@ export default function Splitting(imageData) {
                                 onPress={() => setChecked((prevList) => {
                                         const newList = [...prevList];
                                         newList[index] = !newList[index];
+                                        updateUsersItems(index)
                                         return newList;
                                     })
                                 }
@@ -151,17 +170,6 @@ export default function Splitting(imageData) {
                             </ListItem>
                         ))}
                         </ScrollView>
-                    <Button align="center" size = 'md' color="#02c736" buttonStyle = {{borderRadius: 15}} style = {{width: '100%', justifyContent: 'center', alignItems: 'center', marginTop: 20}} onPress={() => 
-                        checked.forEach((item, index) => {if (item) {
-                            const updatedItems = [...usersItems];
-                            updatedItems[index][selectedUser] = true;
-                            setUsersItems(updatedItems);
-                        } else {
-                            const updatedItems = [...usersItems];
-                            updatedItems[index][selectedUser] = false;
-                            setUsersItems(updatedItems);
-                        }})
-                    }>Confirm Selection</Button> 
                     </View>
                     : <View></View>
                 }
@@ -176,19 +184,6 @@ export default function Splitting(imageData) {
 
     }
     </ScrollView>
-        /* // <View style={styles.container}>
-        //     <Table borderStyle={styles.table}>
-        //         <Row
-        //             data={Object.keys(tableData[0])} // Use the keys of the first object as table headers
-        //             style={styles.head}
-        //             textStyle={styles.headText}
-        //         />
-        //         <Rows
-        //             data={tableData.map((rowData) => Object.values(rowData))}
-        //             textStyle={styles.rowText}
-        //         />
-        //     </Table>
-        // </View> */
     );
 };
 

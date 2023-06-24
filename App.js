@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 import React, { useState, useEffect, useRef } from 'react';
 import Splitting from './Splitting';
-import Button from './src/components/Button';
+import CustomButton from './src/components/CustomButton';
 
 export default function App() {
   const [cameraPermission, setCameraPermission] = useState(null);
@@ -17,6 +17,11 @@ export default function App() {
   //reference for camera
   const cameraRef = useRef(null);
   const [imageData, setImageData] = useState(null);
+  const [splittingData, setSplittingData] = useState(false);
+
+  const updateImageData = () => {
+    setImageData(null);
+  }
 
   const API_URL = `https://jzsggwpl40.execute-api.us-east-1.amazonaws.com/processImage`;
 
@@ -89,51 +94,53 @@ export default function App() {
       {!imageData
         ?
         !image
-          ? <Camera
-            style={styles.camera}
-            type={cameraType}
-            flashMode={flash}
-            ref={cameraRef}
-          >
-            <View style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 30,
-            }}>
-              <Button icon={'retweet'} onPress={() => {
-                setCameraType(cameraType === CameraType.back ? CameraType.front : CameraType.back);
-              }} />
-              <Button icon={'flash'}
-                color={flash === Camera.Constants.FlashMode.off ? 'gray' : '#f1f1f1'}
-                onPress={() => {
-                setFlash(flash === Camera.Constants.FlashMode.off 
-                  ? Camera.Constants.FlashMode.on
-                  : Camera.Constants.FlashMode.off);
-              }}/>
-            </View> 
-          </Camera>
+          ? <View style={styles.container}> 
+            <Camera
+              style={styles.camera}
+              type={cameraType}
+              flashMode={flash}
+              ref={cameraRef}
+            >
+              <View style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 30,
+              }}>
+                <CustomButton icon={'retweet'} onPress={() => {
+                  setCameraType(cameraType === CameraType.back ? CameraType.front : CameraType.back);
+                }} />
+                <CustomButton icon={'flash'}
+                  color={flash === Camera.Constants.FlashMode.off ? 'gray' : '#f1f1f1'}
+                  onPress={() => {
+                  setFlash(flash === Camera.Constants.FlashMode.off 
+                    ? Camera.Constants.FlashMode.on
+                    : Camera.Constants.FlashMode.off);
+                }}/>
+              </View>
+            
+            </Camera>
+            <View style={styles.buttonContainer}>
+              <CustomButton title={'Take a picture'} icon="camera" onPress={takePicture}/>
+            </View>
+          </View>
     
-          : <Image source={{uri: image}} style={styles.camera}/> 
+          : <View style={styles.container}>
+              <Image source={{uri: image}} style={styles.camera}/> 
+                <View style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 50,
+                }}>
+                  <CustomButton title={'Re-take'} icon="retweet" onPress={() => setImage(null)}/>
+                  <CustomButton title={"Process Image"} icon="check" onPress={processImage}/>
+              </View>
+            </View>
         : 
         <View>
-        <Splitting imageData={imageData}/>
+          <Splitting imageData={imageData} onUpdateImageData={updateImageData}/>
         </View>
       }
-      <View>
-        {!imageData ? 
-          image ?
-            <View style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 50,
-            }}>
-              <Button title={'Re-take'} icon="retweet" onPress={() => setImage(null)}/>
-              <Button title={"Process Image"} icon="check" onPress={processImage}/>
-            </View> 
-            : <Button title={'Take a picture'} icon="camera" onPress={takePicture}/>
-          : <Button title={"Back"} icon="check" onPress={() => setImageData(null)}/>
-        }
-      </View>
+      
     </View>
   );
 }
@@ -144,10 +151,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
     justifyContent: 'center',
+    alignItems: 'stretch',
     paddingBottom: 20
   },
   camera: {
     flex: 1,
     borderRadius: 20,
-  }
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 30,
+  },
 });
