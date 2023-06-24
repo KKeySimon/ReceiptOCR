@@ -18,7 +18,8 @@ export default function Splitting({imageData, onUpdateImageData}) {
     const [evenOrIndiv, setEvenOrIndiv] = React.useState(0);
     const [dataConfirmed, setDataConfirmed] = React.useState(false);
     //2D array (item, users)
-    const [usersItems, setUsersItems] = React.useState(Array.from({length : tableData.length}, () => Array.from({length: numPeople}, () => null)))
+    const [usersItems, setUsersItems] = React.useState(Array.from({length : tableData.length}, () => Array.from({length: numPeople}, () => null)));
+    const [finalPrices, setFinalPrices] = React.useState([]);
 
     function calcTotalPrice() {
         var price = 0;
@@ -36,6 +37,43 @@ export default function Splitting({imageData, onUpdateImageData}) {
         onUpdateImageData();
     };
     
+    function calcFinalPrices() {
+        let usersPrices = [];
+        for (let i = 0; i < usersItems.length; i++) {
+            let count = 0;
+            let itemPrice = Number(tableData[i]['PRICE']);
+           
+            let currentUsers = [];
+            
+            for (let j = 0; j < usersItems[i].length; j++) {
+                if (usersItems[i][j] === true) {
+                    count++;
+                    currentUsers.push(j);
+                }
+            }
+    
+            if (count != 0) {
+                itemPrice = itemPrice / count;
+            } else {
+                itemPrice = itemPrice / numPeople;
+            }
+            
+            for (let j = 0; j < currentUsers.length; j++) {
+                if (usersPrices[currentUsers[j]] == null) {
+                    usersPrices[currentUsers[j]] = 0
+                } 
+                usersPrices[currentUsers[j]] += itemPrice;
+            }
+        }
+        for (let i = 0; i < usersPrices.length; i++) {
+            if (usersPrices[i]) {
+                usersPrices[i] = usersPrices[i].toFixed(2);
+            }
+        }
+    
+        return usersPrices;
+    }
+
     return (
 
         /*
@@ -50,7 +88,8 @@ export default function Splitting({imageData, onUpdateImageData}) {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 padding: 30,
-              }}><CustomButton icon='level-up' onPress={() => handleClick()} color='gray' /></View>
+              }}><CustomButton icon='level-up' onPress={() => handleClick()} color='gray' />
+            </View>
                 <View style = {{ marginTop: 150, marginBottom: -150}}>
                 
                     <Text h1 style = {{textAlign: 'center', fontWeight: 'bold', color: '#02c736'}}>Looks Good?</Text>
@@ -69,16 +108,19 @@ export default function Splitting({imageData, onUpdateImageData}) {
                 </View>
            
                 <View style = {styles.buttonContainer}>
-                    <Button color="#02c736" size="md" onPress={() => {setDataConfirmed(true); calcTotalPrice()}}>Continue</Button>
+                    <Button color="#02c736" size="lg" buttonStyle = {{height: 70}} titleStyle = {{fontSize: 24, fontWeight: 'bold'}} onPress={() => {setDataConfirmed(true); calcTotalPrice()}}>CONTINUE</Button>
                 </View>
         </View>
         : 
         <View style = {styles.container}>
-<View style={{
+            <View style={{
+                marginBottom: -100,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 padding: 30,
-              }}><CustomButton icon='level-up' onPress={() => handleClick()} color='gray' /></View>
+            }}>
+                <CustomButton icon='level-up' onPress={() => handleClick()} color='gray' />
+            </View>
             <View style = {{marginTop: 125, marginBottom:0}}>
                 <Text h2 style = {{textAlign: 'center',  marginBottom: 20}} >Total Price:</Text>
                 <View style={styles.listItemContent}>
@@ -89,7 +131,7 @@ export default function Splitting({imageData, onUpdateImageData}) {
                     </View>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20, marginTop:30 }}>
-                    <Text h4 align = "center" containerStyle={{ marginBottom: 20 }}> Number of People:</Text>
+                    <Text h4 align = "center" style = {{marginLeft: 10}}> Number of People:</Text>
                     <View style = {{marginLeft: 20 , flexDirection: 'row', alignItems: 'center'}}>
                         <Button buttonStyle = {{marginRight: 30}} color = '#fff' titleStyle = {{color:'#02c736'}} size="md" onPress={() => {if (numPeople != 0) {
                             setNumPeople(numPeople - 1)
@@ -118,6 +160,7 @@ export default function Splitting({imageData, onUpdateImageData}) {
                 {evenOrIndiv !== 0 ?
                     <View style = {styles.container} align = "center">
                         <Text style = {{textAlign: 'center'}}>Select Which User Ordered Which Dish</Text>
+                        <Text style = {{textAlign: 'center'}}>If an item isn't selected, it will be evenly distributed.</Text>
                         <ButtonGroup
                             selectedButtonStyle = {{backgroundColor: '#02c736'}}
                             selectedTextStyle = {{color: 'white'}}
@@ -176,7 +219,7 @@ export default function Splitting({imageData, onUpdateImageData}) {
             </View>
             
             <View style = {styles.buttonContainer}>
-                <Button color="#02c736"  size="md">CONTINUE</Button> 
+                <Button color="#02c736"  size="lg" buttonStyle = {{height: 70}} onPress={() => console.log(calcFinalPrices())} titleStyle = {{fontSize: 24, fontWeight: 'bold'}}>CONTINUE</Button> 
             </View>
 
             
@@ -199,7 +242,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
       },
     buttonContainer: {
-        marginTop: 50,
         width: '100%',
 
       },

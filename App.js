@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'stretch',
-    paddingBottom: 20
   },
   camera: {
     flex: 1,
