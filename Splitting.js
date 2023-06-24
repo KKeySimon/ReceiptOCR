@@ -45,7 +45,7 @@ export default function Splitting(imageData) {
 
                 <View style = {styles.listItemContainer}>
                     {tableData.map((rowData, index) => (
-                        <ListItem bottomDivider key={index}>
+                        <ListItem bottomDivider topDivider key={index}>
                             <ListItem.Content style = {styles.listItemContent}>
                                 <ListItem.Title style = {{color: "#02c736", fontWeight: 'bold'}}>{rowData['ITEM']}</ListItem.Title>
                                 <ListItem.Subtitle>Price: ${rowData['PRICE']}</ListItem.Subtitle>
@@ -122,7 +122,8 @@ export default function Splitting(imageData) {
                         {tableData.map((rowData, index) => (
                             <ListItem 
                                 key={index}
-                            bottomDivider>
+                            bottomDivider
+                            topDivider>
                                 <ListItem.CheckBox
                                 // Use ThemeProvider to change the defaults of the checkbox
                                 checkedColor='#02c736'
@@ -150,7 +151,7 @@ export default function Splitting(imageData) {
                             </ListItem>
                         ))}
                         </ScrollView>
-                    <Button align="center" size = 'md' color="#02c736" buttonStyle = {{borderRadius: 10}} style = {{width: '100%', justifyContent: 'center', alignItems: 'center', marginTop: 20}} onPress={() => 
+                    <Button align="center" size = 'md' color="#02c736" buttonStyle = {{borderRadius: 15}} style = {{width: '100%', justifyContent: 'center', alignItems: 'center', marginTop: 20}} onPress={() => 
                         checked.forEach((item, index) => {if (item) {
                             const updatedItems = [...usersItems];
                             updatedItems[index][selectedUser] = true;
@@ -210,7 +211,7 @@ const styles = StyleSheet.create({
     priceTextBox: {
         backgroundColor: '#02c736',
         borderColor: 'none',
-        borderRadius: 10,
+        borderRadius: 15,
         padding: 10,
         width: '50%',
         justifyContent: 'center',
