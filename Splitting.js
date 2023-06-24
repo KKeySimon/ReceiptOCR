@@ -63,7 +63,13 @@ export default function Splitting(imageData) {
 
             <View style = {{marginTop: 125, marginBottom:0}}>
                 <Text h2 style = {{textAlign: 'center',  marginBottom: 20}} >Total Price:</Text>
-                <Text h1 style = {{textAlign: 'center', fontWeight: 'bold', color: '#02c736'}} containerStyle = {{marginBottom: 20}}>{totalPrice}</Text>
+                <View style={styles.listItemContent}>
+                    <View style={styles.priceTextBox}>
+                    <Text h1 style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}>
+                        ${totalPrice}
+                    </Text>
+                    </View>
+                </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20, marginTop:30 }}>
                     <Text h4 align = "center" containerStyle={{ marginBottom: 20 }}> Number of People:</Text>
                     <View style = {{marginLeft: 20 , flexDirection: 'row', alignItems: 'center'}}>
@@ -199,6 +205,15 @@ const styles = StyleSheet.create({
     buttonContainer: {
         marginTop: 50,
         width: '100%',
+
+      },
+    priceTextBox: {
+        backgroundColor: '#02c736',
+        borderColor: 'none',
+        borderRadius: 10,
+        padding: 10,
+        width: '50%',
+        justifyContent: 'center',
 
       },
     
