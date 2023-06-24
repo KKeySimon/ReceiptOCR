@@ -1,41 +1,13 @@
-export default function Result({usersItems, numPeople, imageData}) {
-    const tableData = imageData
+import React, { useState, useEffect } from 'react';
+import { ScrollView, StyleSheet, View, Dimensions } from 'react-native';
+import CustomButton from './src/components/CustomButton';
+import { ButtonGroup, ListItem } from '@rneui/base';
+import { Button, Text, Icon } from '@rneui/themed';
 
-    function calcFinalPrices() {
-        let usersPrices = [];
-        for (let i = 0; i < usersItems.length; i++) {
-            
-            let itemPrice = Number(tableData[i]['PRICE']);
-            
-            let selected = false;
-            let users = [];
-            
-            for (let j = 0; j < usersItems[i].length; j++) {
-                if (usersItems[i][j] === true) {
-                    selected = true;
-                    users.push(j);
-                }
-            }
-            if (!selected) {
-                for (let j = 0; j < numPeople; j++) {
-                    users.push(j);
-                }
-            }
-            itemPrice = itemPrice / users.length;
-            for (let j = 0; j < users.length; j++) {
-                if (usersPrices[users[j]] === undefined) {
-                    usersPrices[users[j]] = {
-                        totalPrice: 0,
-                        items: [],
-                    };                
-                }
-                usersPrices[users[j]].totalPrice += itemPrice;
-                usersPrices[users[j]].items.push([tableData[i]['PRICE'],[tableData[i]['ITEM']], users.length])
-            }
-        }
-    
-        return usersPrices;
-    }
+export default function Result({data}) {
+    const finalPrices = data
+    console.log(finalPrices)
+
     return (
         <ScrollView scrollEnabled = {false}>
             <View style = {styles.container}>
@@ -46,26 +18,49 @@ export default function Result({usersItems, numPeople, imageData}) {
                 }}><CustomButton icon='level-up' onPress={() => handleClick()} color='gray' />
                 </View>
                 <View style = {{ marginTop: 150, marginBottom: -150}}>
-                
-                    <Text h1 style = {{textAlign: 'center', fontWeight: 'bold', color: '#02c736'}}>Looks Good?</Text>
-                    <Text style = {{textAlign: 'center', marginTop: 30, marginBottom: -30}}> Check if all the information is correct.</Text>
+                    <Text h1 style = {{textAlign: 'center', fontWeight: 'bold', color: '#02c736'}}>Final Costs</Text>
+                    <Text style = {{textAlign: 'center', marginTop: 30, marginBottom: -30}}>Check if all the information is correct.</Text>
                 </View>
 
                 <View style = {styles.listItemContainer}>
-                    {tableData.map((rowData, index) => (
+                    {finalPrices.map((rowData, index) => (
                         <ListItem bottomDivider topDivider key={index}>
                             <ListItem.Content style = {styles.listItemContent}>
-                                <ListItem.Title style = {{color: "#02c736", fontWeight: 'bold'}}>{rowData['ITEM']}</ListItem.Title>
-                                <ListItem.Subtitle>Price: ${rowData['PRICE']}</ListItem.Subtitle>
+                                <ListItem.Title style = {{color: "#02c736", fontWeight: 'bold'}}>User {index + 1}: ${rowData.totalPrice.toFixed(2)}</ListItem.Title>
+                                {rowData.items.map((innerRowData, innerIndex) => (
+                                    <ListItem.Subtitle>Item: {innerRowData[1]}, Price: ${innerRowData[0]}, Split Amongst {innerRowData[2]} People</ListItem.Subtitle>
+                                ))}
                             </ListItem.Content>
                         </ListItem>
                     ))}
-                </View>
-            
-                <View style = {styles.buttonContainer}>
-                    <Button color="#02c736" size="lg" buttonStyle = {{height: 70}} titleStyle = {{fontSize: 24, fontWeight: 'bold'}} onPress={() => {setDataConfirmed(true); calcTotalPrice()}}>CONTINUE</Button>
                 </View>
             </View>
         </ScrollView>
     )
 }
+const styles = StyleSheet.create({
+    container: { flex: 1, backgroundColor: '#fff', width: Dimensions.get('window').width, height: Dimensions.get('window').height},
+
+    listItemContainer: {
+        flex: 1,
+        justifyContent: 'center',
+      },
+      listItemContent: {
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    buttonContainer: {
+        width: '100%',
+
+      },
+    priceTextBox: {
+        backgroundColor: '#02c736',
+        borderColor: 'none',
+        borderRadius: 15,
+        padding: 10,
+        width: '50%',
+        justifyContent: 'center',
+
+      },
+    
+});
