@@ -15,6 +15,7 @@ export default function Result({data, onUpdateFinalPrices, onUpdateImageData}) {
             rowData.items.forEach(innerRowData => {
                 finalString = finalString + (1/innerRowData[2]).toFixed(2) * 100 + "% of Item: " + innerRowData[1] + ", Price: $" + innerRowData[0] + "\n";
             });
+            finalString = finalString + "___________________________________ \n";
         });
         return finalString;
     }
@@ -52,27 +53,27 @@ export default function Result({data, onUpdateFinalPrices, onUpdateImageData}) {
                     padding: 30,
                 }}><CustomButton icon='level-up' onPress={() => handleClick()} color='gray' />
                 </View>
-                <View style = {{ marginTop: 150, marginBottom: -150}}>
+                <View>
                     <Text h1 style = {{textAlign: 'center', fontWeight: 'bold', color: '#02c736'}}>Final Costs</Text>
-                    <Text style = {{textAlign: 'center', marginTop: 30, marginBottom: -30}}>Check if all the information is correct.</Text>
+                    <Text style = {{textAlign: 'center', padding: 20}}>Check if all the information is correct.</Text>
                 </View>
 
-                <View style = {styles.listItemContainer}>
-                    {finalPrices.map((rowData, index) => (
-                        <ListItem bottomDivider topDivider key={index}>
-                            <ListItem.Content style = {styles.listItemContent}>
-                                <ListItem.Title style = {{color: "#02c736", fontWeight: 'bold'}}>User {index + 1}: ${rowData.totalPrice.toFixed(2)}</ListItem.Title>
-                                {rowData.items.map((innerRowData, innerIndex) => (
-                                    <ListItem.Subtitle key={innerIndex}>{(1/innerRowData[2]).toFixed(2) * 100}% of Item: {innerRowData[1]}, Price: ${innerRowData[0]}</ListItem.Subtitle>
-                                ))}
-                            </ListItem.Content>
-                        </ListItem>
-                    ))}
-                </View>
-                <CustomButton icon='forward' title="Share The Bill" color="black" onPress={onShare} />
-                <CustomButton icon='cw' title="Scan Another Receipt" color="black" onPress={onUpdateImageData} />
-            </View>
-        </ScrollView>
+                <ScrollView scrollEnabled = {true}>
+                {finalPrices.map((rowData, index) => (
+                    <ListItem bottomDivider topDivider key={index}>
+                        <ListItem.Content style = {styles.listItemContent}>
+                            <ListItem.Title style = {{color: "#02c736", fontWeight: 'bold'}}>User {index + 1}: ${rowData.totalPrice.toFixed(2)}</ListItem.Title>
+                            {rowData.items.map((innerRowData, innerIndex) => (
+                                <ListItem.Subtitle key={innerIndex}>{((1/innerRowData[2]).toFixed(2) * 100).toFixed(0)}% of Item: {innerRowData[1]}, Price: ${innerRowData[0]}</ListItem.Subtitle>
+                            ))}
+                        </ListItem.Content>
+                    </ListItem>
+                ))}
+            </ScrollView>
+            <CustomButton icon='forward' title="Share The Bill" color="black" onPress={onShare} />
+            <CustomButton icon='cw' title="Scan Another Receipt" color="black" onPress={onUpdateImageData} />
+        </View>
+    </ScrollView>
     )
 }
 const styles = StyleSheet.create({

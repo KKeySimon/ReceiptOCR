@@ -27,6 +27,29 @@ export default function Splitting({imageData, onUpdateImageData}) {
         setShowFinalPrices(false);
     }
 
+    const isUsersItemsOutOfbounds = () => {
+        const updatedItems = [...usersItems]
+        updatedItems.forEach((row, index) => {
+            if (row.length === numPeople) {
+                updatedItems[index] = row.slice(0, row.length - 1);
+            }
+        });
+        setUsersItems(updatedItems)
+
+        if (selectedUser + 1 === numPeople) {
+            for (let i = 0; i < usersItems.length; i++) {
+                if (usersItems[i][selectedUser - 1] === true) {
+                    checked[i] = true;
+                } else {
+                    checked[i] = false;
+                }
+            }
+            setSelectedUser(selectedUser - 1);
+        }
+        console.log(usersItems)
+        
+    }
+
     function calcFinalPrices() {
         let usersPrices = [];
         for (let i = 0; i < usersItems.length; i++) {
@@ -143,7 +166,8 @@ export default function Splitting({imageData, onUpdateImageData}) {
                         <Text h4 align = "center" style = {{marginLeft: 10}}> Number of People:</Text>
                         <View style = {{marginLeft: 20 , flexDirection: 'row', alignItems: 'center'}}>
                             <Button buttonStyle = {{marginRight: 30}} color = '#fff' titleStyle = {{color:'#02c736'}} size="md" onPress={() => {if (numPeople != 1) {
-                                setNumPeople(numPeople - 1)
+                                setNumPeople(numPeople - 1);
+                                isUsersItemsOutOfbounds();
                             }}}>-</Button>
                             <Text h4 style = {{fontWeight: 'bold'}}> {numPeople}</Text>
                             <Button buttonStyle = {{marginLeft: 30}} color = '#fff' titleStyle = {{color:'#02c736'}} size="md" onPress={() => setNumPeople(numPeople + 1)}>+</Button>
@@ -206,7 +230,7 @@ export default function Splitting({imageData, onUpdateImageData}) {
                                             newList[index] = !newList[index];
                                             updateUsersItems(index)
                                             return newList;
-                                        })
+                                        })  
                                     }
                                     />
                                     <ListItem.Content>
@@ -214,11 +238,11 @@ export default function Splitting({imageData, onUpdateImageData}) {
                                         <ListItem.Subtitle>${rowData['PRICE']}</ListItem.Subtitle>
                                     </ListItem.Content>
                                     {usersItems[index].map((item, index) => {
-                                        if (item) {
-                                            return <Text style = {{color: '#02c736'}} key={index}>{index + 1}</Text>
+                                        console.log(usersItems)
+                                        if (item === true) {
+                                            return <Text style = {{color: '#02c736'}} key={index}>{index + 1}</Text>;
                                         }
                                     })}
-                    
                                 </ListItem>
                             ))}
                             </ScrollView>
@@ -228,7 +252,7 @@ export default function Splitting({imageData, onUpdateImageData}) {
                 </View>
                 
                 <View style = {styles.buttonContainer}>
-                    <Button color="#02c736"  size="lg" buttonStyle = {{height: 70}} onPress={() => {calcFinalPrices(); setShowFinalPrices(true)}} titleStyle = {{fontSize: 24, fontWeight: 'bold'}}>CONTINUE #2</Button> 
+                    <Button color="#02c736"  size="lg" buttonStyle = {{height: 70}} onPress={() => {calcFinalPrices(); setShowFinalPrices(true)}} titleStyle = {{fontSize: 24, fontWeight: 'bold'}}>CONTINUE</Button> 
                 </View>
 
                 
