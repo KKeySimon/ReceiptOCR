@@ -1,12 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, View, Dimensions } from 'react-native';
+import { ScrollView, StyleSheet, View, Dimensions, Alert, Share } from 'react-native';
 import CustomButton from './src/components/CustomButton';
 import { ButtonGroup, ListItem } from '@rneui/base';
 import { Button, Text, Icon } from '@rneui/themed';
 
+//import * as SMS from 'expo-sms'
+
 export default function Result({data}) {
-    const finalPrices = data
-    console.log(finalPrices)
+    const finalPrices = data;
+    const parseFinalPrices = () => {
+        let finalString = "";
+        finalPrices.forEach((rowData, index) => {
+            finalString = finalString + "User " + (index + 1) + ": $" + rowData.totalPrice.toFixed(2) + "\n";
+            rowData.items.forEach(innerRowData => {
+                finalString = finalString + (1/innerRowData[2]).toFixed(2) * 100 + "% of Item: " + innerRowData[1] + ", Price: $" + innerRowData[0] + "\n";
+            });
+        });
+        return finalString;
+    }
+    
+    const onShare = async () => {
+        try {
+            const result = await Share.share({
+                message:
+                parseFinalPrices(),
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+              // shared with activity type of result.activityType
+                } else {
+              // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+            // dismissed
+            }
+        } catch (error) {
+            Alert.alert(error.message);
+        }
+    };
 
     return (
         <ScrollView scrollEnabled = {false}>
@@ -28,12 +59,13 @@ export default function Result({data}) {
                             <ListItem.Content style = {styles.listItemContent}>
                                 <ListItem.Title style = {{color: "#02c736", fontWeight: 'bold'}}>User {index + 1}: ${rowData.totalPrice.toFixed(2)}</ListItem.Title>
                                 {rowData.items.map((innerRowData, innerIndex) => (
-                                    <ListItem.Subtitle>Item: {innerRowData[1]}, Price: ${innerRowData[0]}, Split Amongst {innerRowData[2]} People</ListItem.Subtitle>
+                                    <ListItem.Subtitle key={innerIndex}>{(1/innerRowData[2]).toFixed(2) * 100}% of Item: {innerRowData[1]}, Price: ${innerRowData[0]}</ListItem.Subtitle>
                                 ))}
                             </ListItem.Content>
                         </ListItem>
                     ))}
                 </View>
+                <CustomButton icon='forward' title="Send SMS" color="black" onPress={onShare} />
             </View>
         </ScrollView>
     )
