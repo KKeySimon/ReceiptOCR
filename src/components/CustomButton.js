@@ -6,7 +6,7 @@ export default function CustomButton({title, onPress, icon, color}) {
     return (
         <TouchableOpacity onPress={onPress} style={styles.button}>
             <Entypo name={icon} size={28} color={color ? color : '#f1f1f1'}/>
-            <Text style={styles.text}>{title}</Text>
+            <Text style={[styles.text, { color: color ? color : "#f1f1f1" }]}>{title}</Text>
         </TouchableOpacity>
     )
 }
@@ -21,7 +21,6 @@ const styles = new StyleSheet.create({
     text: {
         fontWeight: 'bold',
         fontSize: 16,
-        color: '#f1f1f1',
         marginLeft: 10,
     }
 })

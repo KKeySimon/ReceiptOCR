@@ -13,7 +13,7 @@ export default function Splitting({imageData, onUpdateImageData}) {
     //Todo: When editing arrays, should make a copy and then use the setter method to avoid
     
     const [checked, setChecked] = React.useState(new Array(imageData.length).fill(false));
-    const [numPeople, setNumPeople] = React.useState(0);
+    const [numPeople, setNumPeople] = React.useState(1);
     const [selectedUser, setSelectedUser] = React.useState(0);
     const [totalPrice, setTotalPrice] = React.useState(0);
     const [evenOrIndiv, setEvenOrIndiv] = React.useState(0);
@@ -22,6 +22,10 @@ export default function Splitting({imageData, onUpdateImageData}) {
     const [usersItems, setUsersItems] = React.useState(Array.from({length : tableData.length}, () => Array.from({length: numPeople}, () => null)));
     const [showFinalPrices, setShowFinalPrices] = React.useState(false);
     const [finalPrices, setFinalPrices] = React.useState([]);
+
+    const updateFinalPrices = () => {
+        setShowFinalPrices(false);
+    }
 
     function calcFinalPrices() {
         let usersPrices = [];
@@ -138,7 +142,7 @@ export default function Splitting({imageData, onUpdateImageData}) {
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20, marginTop:30 }}>
                         <Text h4 align = "center" style = {{marginLeft: 10}}> Number of People:</Text>
                         <View style = {{marginLeft: 20 , flexDirection: 'row', alignItems: 'center'}}>
-                            <Button buttonStyle = {{marginRight: 30}} color = '#fff' titleStyle = {{color:'#02c736'}} size="md" onPress={() => {if (numPeople != 0) {
+                            <Button buttonStyle = {{marginRight: 30}} color = '#fff' titleStyle = {{color:'#02c736'}} size="md" onPress={() => {if (numPeople != 1) {
                                 setNumPeople(numPeople - 1)
                             }}}>-</Button>
                             <Text h4 style = {{fontWeight: 'bold'}}> {numPeople}</Text>
@@ -234,7 +238,7 @@ export default function Splitting({imageData, onUpdateImageData}) {
         </ScrollView>
         :
         <View>
-            <Result data={finalPrices}/>
+            <Result data={finalPrices} onUpdateFinalPrices={updateFinalPrices} onUpdateImageData={onUpdateImageData}/>
         </View>
     );
 };

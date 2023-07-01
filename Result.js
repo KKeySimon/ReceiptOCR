@@ -6,7 +6,7 @@ import { Button, Text, Icon } from '@rneui/themed';
 
 //import * as SMS from 'expo-sms'
 
-export default function Result({data}) {
+export default function Result({data, onUpdateFinalPrices, onUpdateImageData}) {
     const finalPrices = data;
     const parseFinalPrices = () => {
         let finalString = "";
@@ -18,6 +18,10 @@ export default function Result({data}) {
         });
         return finalString;
     }
+
+    const handleClick = () => {
+        onUpdateFinalPrices();
+    };
     
     const onShare = async () => {
         try {
@@ -65,7 +69,8 @@ export default function Result({data}) {
                         </ListItem>
                     ))}
                 </View>
-                <CustomButton icon='forward' title="Send SMS" color="black" onPress={onShare} />
+                <CustomButton icon='forward' title="Share The Bill" color="black" onPress={onShare} />
+                <CustomButton icon='cw' title="Scan Another Receipt" color="black" onPress={onUpdateImageData} />
             </View>
         </ScrollView>
     )
