@@ -46,7 +46,6 @@ export default function Splitting({imageData, onUpdateImageData}) {
             }
             setSelectedUser(selectedUser - 1);
         }
-        console.log(usersItems)
         
     }
 
@@ -238,7 +237,6 @@ export default function Splitting({imageData, onUpdateImageData}) {
                                         <ListItem.Subtitle>${rowData['PRICE']}</ListItem.Subtitle>
                                     </ListItem.Content>
                                     {usersItems[index].map((item, index) => {
-                                        console.log(usersItems)
                                         if (item === true) {
                                             return <Text style = {{color: '#02c736'}} key={index}>{index + 1}</Text>;
                                         }

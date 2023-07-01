@@ -36,6 +36,7 @@ export default function App() {
 
   const options = {
     base64: true,
+    quality: 0.1,
   }
 
   const takePicture = async () => {
@@ -57,24 +58,25 @@ export default function App() {
         const data = {
           "image": base64Image,
         };
+
         const body = JSON.stringify(data)
-        // const res = await fetch(API_URL, {
-        //   method: "POST",
-        //   body: body
-        // });
-        const string = '[{"ITEM": "CBR", "PRICE": "18.60"}, {"ITEM": "S FF", "PRICE": "6.76"}, {"ITEM": "FISH CH", "PRICE": "3.18"}, {"ITEM": "CKN CH", "PRICE": "3.38"}]';
-        const objects = JSON.parse(string);
-        setImageData(objects)
-        // if (res.ok) {
-        //   const responseBody = await res.text();
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: body
+        });
+        // const string = '[{"ITEM": "CBR", "PRICE": "18.60"}, {"ITEM": "S FF", "PRICE": "6.76"}, {"ITEM": "FISH CH", "PRICE": "3.18"}, {"ITEM": "CKN CH", "PRICE": "3.38"}]';
+        // const objects = JSON.parse(string);
+        // setImageData(objects)
+        if (res.ok) {
+          const responseBody = await res.text();
         
-        //   console.log(typeof JSON.parse(responseBody));
-        //   console.log(typeof imageData)
-        //   setImageData(JSON.parse(responseBody));
+          console.log(typeof JSON.parse(responseBody));
+          console.log(typeof imageData)
+          setImageData(JSON.parse(responseBody));
           
-        // } else {
-        //   console.log(res.status);
-        // }
+        } else {
+          console.log(res.status);
+        }
         setImage(null);
         setBase64Image(null);
       } catch (e) {
