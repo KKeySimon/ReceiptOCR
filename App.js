@@ -17,7 +17,7 @@ export default function App() {
   //reference for camera
   const cameraRef = useRef(null);
   const [imageData, setImageData] = useState(null);
-  const [splittingData, setSplittingData] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const updateImageData = () => {
     setImageData(null);
@@ -64,9 +64,7 @@ export default function App() {
           method: "POST",
           body: body
         });
-        // const string = '[{"ITEM": "CBR", "PRICE": "18.60"}, {"ITEM": "S FF", "PRICE": "6.76"}, {"ITEM": "FISH CH", "PRICE": "3.18"}, {"ITEM": "CKN CH", "PRICE": "3.38"}]';
-        // const objects = JSON.parse(string);
-        // setImageData(objects)
+        
         if (res.ok) {
           const responseBody = await res.text();
         
@@ -77,6 +75,11 @@ export default function App() {
         } else {
           console.log(res.status);
         }
+
+        // const string = '[{"ITEM": "CBR", "PRICE": "18.60"}, {"ITEM": "S FF", "PRICE": "6.76"}, {"ITEM": "FISH CH", "PRICE": "3.18"}, {"ITEM": "CKN CH", "PRICE": "3.38"}]';
+        // const objects = JSON.parse(string);
+        // setImageData(objects)
+        setLoading(false);
         setImage(null);
         setBase64Image(null);
       } catch (e) {
@@ -127,14 +130,16 @@ export default function App() {
     
           : <View style={styles.container}>
               <Image source={{uri: image}} style={styles.camera}/> 
-                <View style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 50,
-                }}>
-                  <CustomButton title={'Re-take'} icon="retweet" onPress={() => setImage(null)}/>
-                  <CustomButton title={"Process Image"} icon= "check" onPress={processImage}/>
-              </View>
+                
+                  
+                  {!loading
+                    ? <View style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      paddingHorizontal: 50,
+                    }}><CustomButton title={'Re-take'} icon="retweet" onPress={() => setImage(null)}/><CustomButton title={"Process Image"} icon= "check" onPress={() => {processImage(); setLoading(true)}}/></View> 
+                    : <CustomButton title={"Loading"} icon= "dots-three-horizontal"/>}
+            
             </View>
         : 
         <View>

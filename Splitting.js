@@ -121,13 +121,13 @@ export default function Splitting({imageData, onUpdateImageData}) {
                     padding: 30,
                 }}><CustomButton icon='level-up' onPress={() => handleClick()} color='gray' />
                 </View>
-                <View style = {{ marginTop: 150, marginBottom: -150}}>
+                <View>
                 
                     <Text h1 style = {{textAlign: 'center', fontWeight: 'bold', color: '#02c736'}}>Looks Good?</Text>
-                    <Text style = {{textAlign: 'center', marginTop: 30, marginBottom: -30}}> Check if all the information is correct.</Text>
+                    <Text style = {{textAlign: 'center', padding: 20}}> Check if all the information is correct.</Text>
                 </View>
 
-                <View style = {styles.listItemContainer}>
+                <ScrollView scrollEnabled={true}>
                     {tableData.map((rowData, index) => (
                         <ListItem bottomDivider topDivider key={index}>
                             <ListItem.Content style = {styles.listItemContent}>
@@ -136,7 +136,7 @@ export default function Splitting({imageData, onUpdateImageData}) {
                             </ListItem.Content>
                         </ListItem>
                     ))}
-                </View>
+                </ScrollView>
             
                 <View style = {styles.buttonContainer}>
                     <Button color="#02c736" size="lg" buttonStyle = {{height: 70}} titleStyle = {{fontSize: 24, fontWeight: 'bold'}} onPress={() => {setDataConfirmed(true); calcTotalPrice()}}>CONTINUE</Button>
